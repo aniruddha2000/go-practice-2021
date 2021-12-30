@@ -88,7 +88,6 @@ func GetOneCourse(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	json.NewEncoder(w).Encode("No course id given")
-	return
 }
 
 func CreateOneCourse(w http.ResponseWriter, r *http.Request) {
@@ -107,9 +106,12 @@ func CreateOneCourse(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//TODO: check if same course exist or not
-	// for index, course := range courses {
-	// 	if course.CourseName ==
-	// }
+	for _, lstcourse := range courses {
+		if lstcourse.CourseName == course.CourseName {
+			json.NewEncoder(w).Encode("Same named course exists!")
+			return
+		}
+	}
 
 	// generate uid, string => int
 
@@ -149,9 +151,7 @@ func DeleteOneCourse(w http.ResponseWriter, r *http.Request) {
 			courses = append(courses[:index], courses[index+1:]...)
 			json.NewEncoder(w).Encode("Deleted succesfully")
 			return
-			// break
 		}
 	}
 	json.NewEncoder(w).Encode("No id found")
-	return
 }
