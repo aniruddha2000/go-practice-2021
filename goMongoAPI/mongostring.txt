@@ -1,0 +1,1 @@
+mongodb+srv://aniruddha:<password>@cluster0.1eioh.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
