@@ -62,11 +62,17 @@ func ReturnSingleArticleHandler(db *sql.DB) func(http.ResponseWriter, *http.Requ
 		query := "SELECT * FROM article WHERE " + "ID=" + "'" + id + "'"
 		log.Print(query)
 		err := db.QueryRow(query).Scan(&article.ID, &article.Title, &article.Description, &article.Content)
-		if err != nil {
+
+		switch err {
+		case sql.ErrNoRows:
+			jsonData := map[string]string{"status": "Empty set"}
+			json.NewEncoder(rw).Encode(jsonData)
+		case nil:
+			json.NewEncoder(rw).Encode(article)
+		default:
 			panic(err)
 		}
 
-		json.NewEncoder(rw).Encode(article)
 	}
 }
 
@@ -87,8 +93,13 @@ func DeleteArticle(db *sql.DB) func(http.ResponseWriter, *http.Request) {
 			panic(err)
 		}
 
-		jsonData := map[string]string{"Rows affected": strconv.Itoa(int(rowsAffected)), "status": "deleted successfully"}
-		json.NewEncoder(rw).Encode(jsonData)
+		if rowsAffected > 0 {
+			jsonData := map[string]string{"Rows affected": strconv.Itoa(int(rowsAffected)), "status": "deleted successfully"}
+			json.NewEncoder(rw).Encode(jsonData)
+		} else {
+			jsonData := map[string]string{"Rows affected": strconv.Itoa(int(rowsAffected)), "status": "no deletion took place"}
+			json.NewEncoder(rw).Encode(jsonData)
+		}
 	}
 }
 
@@ -120,8 +131,13 @@ func UpdateArticle(db *sql.DB) func(http.ResponseWriter, *http.Request) {
 			panic(err)
 		}
 
-		jsonData := map[string]string{"Rows affected": strconv.Itoa(int(rowsAffected)), "status": "updated successfully"}
-		json.NewEncoder(rw).Encode(jsonData)
+		if rowsAffected > 0 {
+			jsonData := map[string]string{"Rows affected": strconv.Itoa(int(rowsAffected)), "status": "updated successfully"}
+			json.NewEncoder(rw).Encode(jsonData)
+		} else {
+			jsonData := map[string]string{"Rows affected": strconv.Itoa(int(rowsAffected)), "status": "no update took place"}
+			json.NewEncoder(rw).Encode(jsonData)
+		}
 	}
 }
 
