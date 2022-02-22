@@ -47,6 +47,7 @@ func ReturnAllArticleHandler(db *sql.DB) func(http.ResponseWriter, *http.Request
 		articles := queryAllRows(db)
 
 		for _, article := range articles {
+			rw.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(rw).Encode(article)
 		}
 	}
@@ -63,6 +64,7 @@ func ReturnSingleArticleHandler(db *sql.DB) func(http.ResponseWriter, *http.Requ
 		log.Print(query)
 		err := db.QueryRow(query).Scan(&article.ID, &article.Title, &article.Description, &article.Content)
 
+		rw.Header().Set("Content-Type", "application/json")
 		switch err {
 		case sql.ErrNoRows:
 			jsonData := map[string]string{"status": "Empty set"}
@@ -93,6 +95,7 @@ func DeleteArticle(db *sql.DB) func(http.ResponseWriter, *http.Request) {
 			panic(err)
 		}
 
+		rw.Header().Set("Content-Type", "application/json")
 		if rowsAffected > 0 {
 			jsonData := map[string]string{"Rows affected": strconv.Itoa(int(rowsAffected)), "status": "deleted successfully"}
 			json.NewEncoder(rw).Encode(jsonData)
@@ -131,6 +134,7 @@ func UpdateArticle(db *sql.DB) func(http.ResponseWriter, *http.Request) {
 			panic(err)
 		}
 
+		rw.Header().Set("Content-Type", "application/json")
 		if rowsAffected > 0 {
 			jsonData := map[string]string{"Rows affected": strconv.Itoa(int(rowsAffected)), "status": "updated successfully"}
 			json.NewEncoder(rw).Encode(jsonData)
