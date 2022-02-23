@@ -4,10 +4,12 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/aniruddha2000/gorestapi/controllers"
 	"github.com/aniruddha2000/gorestapi/database"
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 )
 
 type Server struct {
@@ -17,11 +19,16 @@ type Server struct {
 }
 
 func main() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("Error Loading .env file")
+	}
+
 	mysql := initDB()
 	defer mysql.Close()
 
 	server := Server{
-		serverPort: ":8090",
+		serverPort: os.Getenv("SERVER_PORT"),
 		router:     mux.NewRouter().StrictSlash(true),
 		db:         mysql,
 	}
@@ -44,10 +51,10 @@ func routeHandler(s *Server) {
 
 func initDB() *sql.DB {
 	config := database.Config{
-		ServerName: "127.0.0.1:3306",
-		User:       "root",
-		Password:   "123",
-		DB:         "ARTICLE",
+		ServerName: os.Getenv("DB_SERVER"),
+		User:       os.Getenv("DB_USER"),
+		Password:   os.Getenv("DB_PASSWORD"),
+		DB:         os.Getenv("DB_NAME"),
 	}
 
 	connectionString := database.GetConnectionString(&config)
