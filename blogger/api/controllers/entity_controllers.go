@@ -209,7 +209,7 @@ func (server *Server) GetPosts(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusOK, posts)
 }
 
-func (server *Server) CreatePosts(w http.ResponseWriter, r *http.Request) {
+func (server *Server) GetPost(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	pid, err := strconv.ParseUint(vars["id"], 10, 64)
 	if err != nil {
