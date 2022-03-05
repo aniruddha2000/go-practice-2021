@@ -111,7 +111,7 @@ func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
 	return u, nil
 }
 
-func (u *User) UpdateUser(db *gorm.DB, uid uint32) (*User, error) {
+func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 	err := u.BeforeSave()
 	if err != nil {
 		log.Fatal(err)
@@ -121,7 +121,7 @@ func (u *User) UpdateUser(db *gorm.DB, uid uint32) (*User, error) {
 			"password":  u.Password,
 			"username":  u.Username,
 			"email":     u.Email,
-			"update_at": time.Now(),
+			"updated_at": time.Now(),
 		},
 	)
 	if db.Error != nil {
