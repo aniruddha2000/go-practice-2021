@@ -11,4 +11,5 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
+	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )
