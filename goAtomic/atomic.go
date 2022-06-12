@@ -26,7 +26,6 @@ func main() {
 			atomic.AddInt64(&count, 1)
 		}()
 	}
-
 	wg.Wait()
 	fmt.Println("count is ", count)
 }
