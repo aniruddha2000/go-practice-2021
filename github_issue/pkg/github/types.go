@@ -17,14 +17,19 @@ type User struct {
 }
 
 type Issue struct {
-	Title  string   `json:"title"`
-	Body   string   `json:"body"`
-	Lables []string `json:"lables"`
-	User   *User    `json:"user,omitempty"`
-	State  state    `json:"state,omitempty"`
+	Number       int      `json:"number,omitempty"`
+	Title        string   `json:"title"`
+	Body         string   `json:"body"`
+	Labels       []Labels `json:"omitempty"`
+	User         *User    `json:"user,omitempty"`
+	State        state    `json:"state,omitempty"`
+}
+
+type Labels struct {
+	Name string `json:"name"`
 }
 
 type Github interface {
-	Search([]string) error
+	Search([]byte) error
 	Create(string, string, []string) ([]byte, error)
 }
