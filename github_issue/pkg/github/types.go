@@ -1,31 +1,15 @@
 package github
 
-import (
-	"time"
-
-	"github.com/aniruddha2000/github_issue/pkg/app"
+const (
+	RepoIssueURL = "https://api.github.com/repos/"
 )
+
+type state string
 
 const (
-	SearchIssueURL = "https://api.github.com/search/issues"
-	RepoIssueURL   = "https://api.github.com/repos/"
+	OPEN   state = "open"
+	CLOSED state = "closed"
 )
-
-type SearchIssueResult struct {
-	TotalCount int `json:"total_count"`
-	Items      []*IssueItems
-}
-
-type IssueItems struct {
-	Number    int
-	HTMLURL   string `json:"html_url"`
-	Title     string
-	State     string
-	User      *User
-	CreatedAt time.Time `json:"created_at"`
-	Body      string
-	Lables    []string
-}
 
 type User struct {
 	Login   string
@@ -36,9 +20,11 @@ type Issue struct {
 	Title  string   `json:"title"`
 	Body   string   `json:"body"`
 	Lables []string `json:"lables"`
+	User   *User    `json:"user,omitempty"`
+	State  state    `json:"state,omitempty"`
 }
 
 type Github interface {
-	Search(c *app.Client)
-	Create(c *app.Client)
+	Search([]string) error
+	Create(string, string, []string) ([]byte, error)
 }
