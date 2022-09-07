@@ -8,5 +8,6 @@ import (
 func Run() {
 	c := app.NewClient()
 
-	gh.Create(c)
+	// gh.CreateIssue(c)
+	gh.SearchIssues(c)
 }

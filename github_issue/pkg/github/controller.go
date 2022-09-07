@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -14,39 +13,37 @@ import (
 	"github.com/aniruddha2000/github_issue/pkg/app"
 )
 
-func searchIssues(items []string) (*IssueSearchResult, error) {
+func (i *SearchIssueResult) search(items []string) error {
 	q := url.QueryEscape(strings.Join(items, " "))
-	resp, err := http.Get(IssueURL + "?q=" + q)
-	log.Println(IssueURL + "?q=" + q)
+	resp, err := http.Get(SearchIssueURL + "?q=" + q)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("search query failed: %s", resp.Status)
+		return fmt.Errorf("search query failed: %s", resp.Status)
 	}
 
 	ctn, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("ioutil read: %v", err)
+		return fmt.Errorf("ioutil read: %v", err)
 	}
 
-	var result IssueSearchResult
-	if err = json.Unmarshal(ctn, &result); err != nil {
-		return nil, err
+	if err = json.Unmarshal(ctn, i); err != nil {
+		return err
 	}
 
-	return &result, nil
+	return nil
 }
 
-func createIssue(c *app.Client, issue Issue, path string) error {
-	ctn, err := json.Marshal(issue)
+func (i *Issue) create(c *app.Client, path string) error {
+	ctn, err := json.Marshal(i)
 	if err != nil {
 		return fmt.Errorf("json marshal err: %v", err)
 	}
 
-	url := CreateIssueURL + path
+	url := RepoIssueURL + path
 
 	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(ctn))
 	if err != nil {

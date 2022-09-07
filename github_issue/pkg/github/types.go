@@ -1,18 +1,22 @@
 package github
 
-import "time"
+import (
+	"time"
 
-const (
-	IssueURL       = "https://api.github.com/search/issues"
-	CreateIssueURL = "https://api.github.com/repos/"
+	"github.com/aniruddha2000/github_issue/pkg/app"
 )
 
-type IssueSearchResult struct {
+const (
+	SearchIssueURL = "https://api.github.com/search/issues"
+	RepoIssueURL   = "https://api.github.com/repos/"
+)
+
+type SearchIssueResult struct {
 	TotalCount int `json:"total_count"`
-	Items      []*SearchIssue
+	Items      []*IssueItems
 }
 
-type SearchIssue struct {
+type IssueItems struct {
 	Number    int
 	HTMLURL   string `json:"html_url"`
 	Title     string
@@ -32,4 +36,9 @@ type Issue struct {
 	Title  string   `json:"title"`
 	Body   string   `json:"body"`
 	Lables []string `json:"lables"`
+}
+
+type Github interface {
+	Search(c *app.Client)
+	Create(c *app.Client)
 }
